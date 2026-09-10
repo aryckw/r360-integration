@@ -1,0 +1,136 @@
+# The composed R360 stack.
+#
+# Developer mode builds the two services from sibling checkouts, which is why this file
+# lives one directory down and uses `../..` contexts: the sibling workspace convention is
+# `workspace/r360-*` (see docs/SDD.md). Release mode replaces those build blocks with
+# immutable image digests pinned in versions/stack.lock.
+#
+#   docker compose -f compose/docker-compose.yml run --rm gate
+#
+# This repository owns no production logic. Service configuration is injected through
+# mounted config files and documented ports; nothing here patches a service to make a
+# test pass.
+name: r360-integration
+
+services:
+  mqtt:
+    image: eclipse-mosquitto:2.0.18
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_sub -h localhost -t healthcheck -C 1 -W 2 -E"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+  postgres:
+    image: postgres:17.5
+    environment:
+      POSTGRES_USER: r360
+      POSTGRES_PASSWORD: r360-dev-only
+      POSTGRES_DB: r360
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U r360"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+  # Present because the stack composition calls for it from M0, and honest about its
+  # state: no service writes to it yet. The SigMF corpus lands here at M1, and having the
+  # dependency stood up now means M1 discovers integration problems rather than inventing
+  # storage under time pressure.
+  objectstore:
+    image: minio/minio:RELEASE.2024-06-13T22-53-53Z
+    command: ["server", "/data", "--console-address", ":9001"]
+    environment:
+      MINIO_ROOT_USER: r360-dev
+      MINIO_ROOT_PASSWORD: r360-dev-only-change-me
+    healthcheck:
+      test: ["CMD-SHELL", "mc ready local || exit 1"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  rf-evidence:
+    build:
+      context: ../../r360-rf-evidence
+      target: service
+      args:
+        R360_RF_GIT_SHA: "${R360_RF_GIT_SHA:-unknown}"
+    depends_on:
+      mqtt:
+        condition: service_healthy
+    volumes:
+      - ./configs/rf-evidence.json:/etc/r360/rf-evidence.json:ro
+    command: ["/work/build/rf_evidence_service", "--config", "/etc/r360/rf-evidence.json"]
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 1 bash -c '</dev/tcp/localhost/50051'"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+  reasoning:
+    build:
+      context: ../../r360-reasoning
+      target: service
+    depends_on:
+      mqtt:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./configs/reasoning.json:/etc/r360/reasoning.json:ro
+    command: ["python", "-m", "r360_reasoning.service", "--config", "/etc/r360/reasoning.json"]
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 1 bash -c '</dev/tcp/localhost/50052'"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+  gate:
+    build:
+      context: ..
+    working_dir: /work
+    volumes:
+      - ..:/work
+      # The sibling workspace, read only. stack.lock claims which revisions were proven
+      # together; verifying that claim means being able to look at them.
+      - ../..:/workspace:ro
+    depends_on:
+      mqtt:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      objectstore:
+        condition: service_healthy
+      rf-evidence:
+        condition: service_healthy
+      reasoning:
+        condition: service_healthy
+    environment:
+      R360_MQTT_HOST: mqtt
+      R360_MQTT_PORT: "1883"
+      R360_POSTGRES_DSN: postgresql://r360:r360-dev-only@postgres:5432/r360
+      R360_RF_EVIDENCE_GRPC: rf-evidence:50051
+      R360_REASONING_GRPC: reasoning:50052
+      R360_OBJECTSTORE: objectstore:9000
+      R360_SESSION_ID: sess-integration
+      R360_WORKSPACE: /workspace
+    command: ["make", "gate"]
+
+  shell:
+    build:
+      context: ..
+    working_dir: /work
+    volumes:
+      - ..:/work
+      - ../..:/workspace:ro
+    environment:
+      R360_MQTT_HOST: mqtt
+      R360_MQTT_PORT: "1883"
+      R360_POSTGRES_DSN: postgresql://r360:r360-dev-only@postgres:5432/r360
+      R360_RF_EVIDENCE_GRPC: rf-evidence:50051
+      R360_REASONING_GRPC: reasoning:50052
+      R360_SESSION_ID: sess-integration
+      R360_WORKSPACE: /workspace
+    command: ["bash"]

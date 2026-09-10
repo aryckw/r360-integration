@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package r360.reasoning.v1;
+
+import "google/protobuf/timestamp.proto";
+import "r360/common/v1/common.proto";
+
+message MissionEvent {
+  string event_id = 1;
+  string event_type = 2;
+  google.protobuf.Timestamp start_time = 3;
+  google.protobuf.Timestamp end_time = 4;
+  repeated r360.common.v1.EntityReference entities = 5;
+  repeated string evidence_ids = 6;
+  double confidence = 7;
+  map<string, string> attributes = 8;
+}
+
+// Deliberately minimal grouping abstraction, not a workflow ontology (D-038).
+message MissionEpisode {
+  string episode_id = 1;
+  string episode_type = 2;
+  google.protobuf.Timestamp start_time = 3;
+  google.protobuf.Timestamp end_time = 4;
+  repeated r360.common.v1.EntityReference entities = 5;
+  repeated string event_ids = 6;
+  repeated string evidence_ids = 7;
+  double confidence = 8;
+}
+
+message ReasoningOutcome {
+  string outcome_id = 1;
+  string outcome_type = 2;
+  optional string episode_id = 3;
+  string assessment = 4;
+  double confidence = 5;
+  // Contradicting evidence is retained, never suppressed (D-017, REQ-REA-005).
+  repeated string supporting_evidence_ids = 6;
+  repeated string contradicting_evidence_ids = 7;
+  r360.common.v1.ProvenanceReference provenance = 8;
+}

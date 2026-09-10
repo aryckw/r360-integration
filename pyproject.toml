@@ -1,0 +1,29 @@
+# Tooling configuration for r360-integration.
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["generated"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "W"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+exclude = ["generated"]
+
+[[tool.mypy.overrides]]
+module = ["google.protobuf.*", "grpc", "grpc.*", "paho.*", "paho.mqtt.*", "psycopg", "psycopg.*"]
+ignore_missing_imports = true
+implicit_reexport = true
+follow_imports = "skip"
+
+[[tool.mypy.overrides]]
+module = ["r360.*"]
+ignore_missing_imports = true
+follow_imports = "skip"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

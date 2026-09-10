@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package r360.service.v1;
+
+import "r360/common/v1/common.proto";
+
+message Empty {}
+
+// Answered by gRPC GetHealth and also published retained on the health topics
+// (ARCHITECTURE 5). Carries both service and contract version so a consumer can
+// refuse an incompatible peer instead of failing later on the wire.
+message HealthResponse {
+  string service_name = 1;
+  string status = 2;
+  string service_version = 3;
+  string contract_version = 4;
+  string producer_git_sha = 5;
+  r360.common.v1.DualTime time = 6;
+  optional string session_id = 7;
+}
+
+message ReplayRequest {
+  string capture_uri = 1;
+  enum ReplayMode {
+    REPLAY_MODE_UNSPECIFIED = 0;
+    REPLAY_FAST = 1;
+    REPLAY_PACED = 2;
+  }
+  ReplayMode mode = 2;
+  string session_id = 3;
+}
+
+message ReplayStatus {
+  string session_id = 1;
+  string state = 2;
+  uint64 samples_processed = 3;
+  uint64 samples_total = 4;
+  optional string failure_code = 5;
+  optional string failure_message = 6;
+}
+
+service RfEvidenceControl {
+  rpc GetHealth(Empty) returns (HealthResponse);
+  rpc StartReplay(ReplayRequest) returns (ReplayStatus);
+  rpc StopReplay(ReplayRequest) returns (ReplayStatus);
+  rpc GetReplayStatus(ReplayRequest) returns (ReplayStatus);
+}
+
+service ReasoningControl {
+  rpc GetHealth(Empty) returns (HealthResponse);
+}

@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package r360.stream.v1;
+
+import "r360/common/v1/common.proto";
+
+// Lifecycle of one ingest/replay stream (rf-evidence SDD state machine).
+enum StreamState {
+  STREAM_STATE_UNSPECIFIED = 0;
+  STREAM_CREATED = 1;
+  STREAM_INITIALIZING = 2;
+  STREAM_READY = 3;
+  STREAM_RUNNING = 4;
+  STREAM_STOPPING = 5;
+  STREAM_STOPPED = 6;
+  STREAM_FAILED = 7;
+}
+
+// Published on r360/v1/{session_id}/rf/lifecycle. One message type per topic, so a
+// consumer can decode a payload without an envelope discriminator (ADR-0007).
+message StreamLifecycleEvent {
+  string event_id = 1;
+  string session_id = 2;
+  string stream_id = 3;
+  string capture_uri = 4;
+  StreamState state = 5;
+  StreamState previous_state = 6;
+  r360.common.v1.DualTime time = 7;
+  uint64 samples_processed = 8;
+  uint64 samples_total = 9;
+  optional string failure_code = 10;
+  optional string failure_message = 11;
+  r360.common.v1.ProvenanceReference provenance = 12;
+}
+
+enum DiagnosticSeverity {
+  DIAGNOSTIC_SEVERITY_UNSPECIFIED = 0;
+  DIAGNOSTIC_INFO = 1;
+  DIAGNOSTIC_WARNING = 2;
+  DIAGNOSTIC_ERROR = 3;
+}
+
+// Typed failure/loss vocabulary. Loss is never silent (REQ-RF-013, REQ-RF-014);
+// every dropped sample range is reported with its exact extent.
+enum DiagnosticCode {
+  DIAGNOSTIC_CODE_UNSPECIFIED = 0;
+  SAMPLE_GAP = 1;
+  QUEUE_OVERFLOW = 2;
+  MALFORMED_METADATA = 3;
+  TRUNCATED_DATA = 4;
+  SOURCE_UNAVAILABLE = 5;
+  CONFIGURATION_INVALID = 6;
+  INTERNAL_INVARIANT_VIOLATION = 7;
+  BACKEND_FALLBACK = 8;
+  UNSUPPORTED_SAMPLE_FORMAT = 9;
+}
+
+// Published on r360/v1/{session_id}/rf/diagnostics.
+message StreamDiagnostic {
+  string diagnostic_id = 1;
+  string session_id = 2;
+  string stream_id = 3;
+  string source_id = 4;
+  string sensor_id = 5;
+  DiagnosticCode code = 6;
+  DiagnosticSeverity severity = 7;
+  string message = 8;
+  optional r360.common.v1.SampleRange sample_range = 9;
+  r360.common.v1.DualTime time = 10;
+  optional uint64 dropped_sample_count = 11;
+  r360.common.v1.ProvenanceReference provenance = 12;
+}

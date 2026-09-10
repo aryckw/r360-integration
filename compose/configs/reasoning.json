@@ -1,0 +1,13 @@
+{
+  "service_name": "r360-reasoning",
+  "session_id": "sess-integration",
+  "mqtt": {
+    "host": "mqtt",
+    "port": 1883,
+    "client_id": "r360-reasoning-integration",
+    "keep_alive_seconds": 20
+  },
+  "grpc_listen_address": "0.0.0.0:50052",
+  "postgres": {"dsn": "postgresql://r360:r360-dev-only@postgres:5432/r360"},
+  "seen_cache_capacity": 100000
+}

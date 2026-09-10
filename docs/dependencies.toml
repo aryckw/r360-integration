@@ -1,0 +1,69 @@
+# Declared third-party dependencies for r360-integration.
+#
+# This repository is a test driver. Everything here exists to compose the stack and
+# observe it: contract bindings, an MQTT client, a gRPC client, a database driver.
+
+[dependency.python3]
+version = "3.11.2-1+b1"
+license = "PSF-2.0"
+why = "the test driver runtime"
+
+[dependency.python3-venv]
+version = "3.11.2-1+b1"
+license = "PSF-2.0"
+why = "Debian interpreter is externally managed; dependencies install into a venv"
+
+[dependency.make]
+version = "unpinned"
+license = "GPL-3.0-or-later"
+why = "runs the gate targets inside the container; utility, not output-affecting"
+
+[dependency.git]
+version = "unpinned"
+license = "GPL-2.0"
+why = "build identity and the clean-diff check; utility, not output-affecting"
+
+[dependency.ca-certificates]
+version = "unpinned"
+license = "MPL-2.0 and GPL-2.0-or-later"
+why = "TLS trust store for package installation; utility, not output-affecting"
+
+[dependency.protobuf]
+version = "4.25.3"
+license = "BSD-3-Clause"
+why = "decodes what the stack actually published, to compare against expected output"
+
+[dependency.grpcio]
+version = "1.62.2"
+license = "Apache-2.0"
+why = "gRPC client for cross-container health and version checks"
+
+[dependency.grpcio-tools]
+version = "1.62.2"
+license = "Apache-2.0"
+why = "generates the Python bindings from the vendored contracts"
+
+[dependency.paho-mqtt]
+version = "2.1.0"
+license = "EPL-2.0 OR EDL-1.0"
+why = "publishes and observes QoS 1 traffic on the composed stack"
+
+[dependency."psycopg[binary]"]
+version = "3.2.1"
+license = "LGPL-3.0-or-later"
+why = "reads what Reasoning persisted, to check the duplicate landed once"
+
+[dependency.pytest]
+version = "8.2.2"
+license = "MIT"
+why = "test runner for the cross-repository acceptance suite"
+
+[dependency.ruff]
+version = "0.5.7"
+license = "MIT"
+why = "format and lint gate"
+
+[dependency.mypy]
+version = "1.10.1"
+license = "MIT"
+why = "strict type gate"

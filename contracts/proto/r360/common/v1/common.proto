@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package r360.common.v1;
+
+import "google/protobuf/timestamp.proto";
+
+// Dual-time model (D-027, ADR-0003). Every observation, evidence item, event and
+// diagnostic carries source/event time and the ingest time of the receiving service.
+// `logical_time_ns` is present only for deterministic replay and is the value a
+// deterministic algorithm may read; wall-clock time may never decide semantics.
+message DualTime {
+  // Time the phenomenon occurred at the source / in simulation.
+  google.protobuf.Timestamp event_time = 1;
+  // Time the receiving R360 service accepted the item.
+  google.protobuf.Timestamp ingest_time = 2;
+  // Deterministic replay clock, nanoseconds since stream origin.
+  optional uint64 logical_time_ns = 3;
+}
+
+// Reference to the immutable source observation a derived item came from.
+// Derived evidence never overwrites the observation it points at.
+message ObservationReference {
+  string observation_id = 1;
+  string source_id = 2;
+  string sensor_id = 3;
+  DualTime time = 4;
+  string capture_id = 5;
+  string correlation_id = 6;
+  optional string scenario_id = 7;
+  optional string session_id = 8;
+  optional string entity_id = 9;
+}
+
+// Minimal lineage: source/capture -> processor/version -> model/signature version (D-036).
+message ProvenanceReference {
+  string processor_name = 1;
+  string processor_version = 2;
+  optional string model_id = 3;
+  optional string model_version = 4;
+  optional string signature_library_version = 5;
+  optional string configuration_sha256 = 6;
+  optional string producer_git_sha = 7;
+  optional string container_image_digest = 8;
+}
+
+message EntityReference {
+  string entity_id = 1;
+  optional string source_namespace = 2;
+}
+
+// Half-open-free, inclusive sample interval within one stream. Used by detection
+// evidence (M3) and by gap/overflow diagnostics (M2), which must always state the
+// exact sample range affected rather than reporting an opaque loss count.
+message SampleRange {
+  uint64 first_sample_index = 1;
+  uint64 last_sample_index = 2;
+}

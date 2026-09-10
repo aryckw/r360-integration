@@ -1,0 +1,16 @@
+# CI runs the same container gate the agent runs. There is no second, weaker pipeline:
+# if this workflow and a developer disagree, one of them is not running the gate.
+name: gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run the authoritative gate
+        run: docker compose -f compose/docker-compose.yml run --rm gate

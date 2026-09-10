@@ -1,0 +1,20 @@
+{
+  "service_name": "r360-rf-evidence",
+  "sensor_id": "sensor-alpha",
+  "session_id": "sess-integration",
+  "mqtt": {
+    "broker_uri": "tcp://mqtt:1883",
+    "client_id": "r360-rf-evidence-integration",
+    "keep_alive_seconds": 20,
+    "connect_timeout_seconds": 5,
+    "clean_session": true
+  },
+  "grpc": {"listen_address": "0.0.0.0:50051"},
+  "source": {"kind": "none", "capture_uri": ""},
+  "buffer_pool": {"buffer_count": 8, "samples_per_buffer": 65536},
+  "queues": [
+    {"name": "ingest", "capacity_buffers": 4, "overflow_policy": "BLOCK"},
+    {"name": "evidence", "capacity_buffers": 64, "overflow_policy": "FAIL_STREAM"}
+  ],
+  "evidence_type_allowlist": ["SIGNAL_DETECTION", "PULSE_DETECTION", "RF_FEATURE_SET"]
+}

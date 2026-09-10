@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package r360.evidence.v1;
+
+import "r360/common/v1/common.proto";
+
+// A single measured quantity. Every feature states what it is, its unit, how it was
+// estimated and how much the estimator trusts it (REQ-RF-034). A bare number with no
+// method or unit is not publishable evidence.
+message Feature {
+  string name = 1;
+  oneof value {
+    double numeric_value = 2;
+    string string_value = 3;
+    bool bool_value = 4;
+    int64 integer_value = 5;
+  }
+  optional string unit = 6;
+  // Estimator quality/confidence in [0,1]. Confidence is not truth.
+  optional double confidence = 7;
+  // Estimator identity, e.g. "cfar.ca.v1" or "pri.median.v1".
+  string method = 8;
+  // Detection evidence IDs this estimate was computed from.
+  repeated string source_detection_ids = 9;
+}
+
+message Classification {
+  string classification_id = 1;
+  string taxonomy = 2;
+  string class_path = 3;
+  double confidence = 4;
+  optional string model_id = 5;
+  optional string model_version = 6;
+}
+
+enum NoveltyDecision {
+  NOVELTY_DECISION_UNSPECIFIED = 0;
+  NOVELTY_KNOWN = 1;
+  NOVELTY_UNCERTAIN = 2;
+  NOVELTY_UNKNOWN = 3;
+}
+
+// Unknown/novel is a first-class result, not a failure (D-011).
+message NoveltyAssessment {
+  double known_class_confidence = 1;
+  double novelty_score = 2;
+  NoveltyDecision decision = 3;
+  optional string nearest_known_class = 4;
+  optional double nearest_known_similarity = 5;
+  optional string cluster_candidate_id = 6;
+}
+
+// Observable RF results only. Mission intent is not an RF Evidence output; it is a
+// Reasoning Service conclusion built from these plus context (ARCHITECTURE 7).
+enum EvidenceType {
+  EVIDENCE_TYPE_UNSPECIFIED = 0;
+  SIGNAL_DETECTION = 1;
+  PULSE_DETECTION = 2;
+  RF_FEATURE_SET = 3;
+  WAVEFORM_CLASSIFICATION = 4;
+  RADAR_BEHAVIOR = 5;
+  EW_BEHAVIOR = 6;
+  NOVEL_RF_BEHAVIOR = 7;
+}
+
+message DerivedEvidence {
+  // Stable, deterministic ID. Consumers deduplicate on this (REQ-CON-003).
+  string evidence_id = 1;
+  r360.common.v1.ObservationReference observation = 2;
+  EvidenceType evidence_type = 3;
+  repeated Feature features = 4;
+  repeated Classification classifications = 5;
+  optional NoveltyAssessment novelty = 6;
+  double confidence = 7;
+  r360.common.v1.ProvenanceReference provenance = 8;
+  repeated string related_evidence_ids = 9;
+  // Sample interval this evidence was derived from, when it is bounded in the stream.
+  optional r360.common.v1.SampleRange sample_range = 10;
+}

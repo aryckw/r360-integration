@@ -1,0 +1,12 @@
+# Pinned Python toolchain for r360-reasoning.
+#
+# Note what is absent: numpy, scipy, torch, sigmf. Reasoning consumes structured evidence,
+# not signals (REQ-REA-001), and the dependency list is the first place that shows.
+protobuf==4.25.3
+grpcio==1.62.2
+grpcio-tools==1.62.2
+paho-mqtt==2.1.0
+psycopg[binary]==3.2.1
+pytest==8.2.2
+ruff==0.5.7
+mypy==1.10.1

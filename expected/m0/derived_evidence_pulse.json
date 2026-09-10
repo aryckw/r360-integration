@@ -1,0 +1,39 @@
+{
+  "evidence_id": "ev-integration-m0-0001",
+  "observation": {
+    "observation_id": "obs-integration-m0-0001",
+    "source_id": "fixture:RF-002-basic-pulse",
+    "sensor_id": "sensor-alpha",
+    "time": {
+      "event_time": "2026-09-09T12:00:03.500000Z",
+      "ingest_time": "2026-09-09T12:00:03.512000Z",
+      "logical_time_ns": "3500000000"
+    },
+    "capture_id": "RF-002-basic-pulse",
+    "correlation_id": "corr-integration-0001",
+    "session_id": "sess-integration"
+  },
+  "evidence_type": "PULSE_DETECTION",
+  "features": [
+    {
+      "name": "pulse_width",
+      "numeric_value": 1.0e-05,
+      "unit": "s",
+      "confidence": 0.94,
+      "method": "fixture.constant.v1"
+    },
+    {
+      "name": "center_frequency",
+      "numeric_value": 3200000000.0,
+      "unit": "Hz",
+      "confidence": 0.88,
+      "method": "fixture.constant.v1"
+    }
+  ],
+  "confidence": 0.91,
+  "provenance": {
+    "processor_name": "r360-rf-evidence",
+    "processor_version": "0.1.0"
+  },
+  "sample_range": {"first_sample_index": "3500000", "last_sample_index": "3500099"}
+}
