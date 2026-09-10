@@ -29,6 +29,11 @@ from pathlib import Path
 # the World-State Adapter are listed with their milestone rather than omitted, so the lock
 # shows the whole intended stack instead of only the part that exists.
 PARTICIPANTS = ("contracts", "rf_evidence", "reasoning", "integration")
+# A repository cannot pin its own revision inside a file it contains: writing the pin
+# changes the revision, which invalidates the pin it just wrote. The integration entry
+# therefore records `self` -- the revision that proved this combination is the commit that
+# carries this lock.
+SELF_PINNED = "self"
 # Real repository names, so the lock names something a person can actually clone.
 DEFERRED = {
     "world_state_adapter": ("the-world-state-adapter", "M10"),
@@ -86,6 +91,13 @@ def verify(lock_path: Path, workspace: Path) -> int:
             problems.append(f"{name} is not pinned in the lock")
             continue
         revision = str(entry.get("revision", ""))
+        if name == "integration":
+            if revision != SELF_PINNED:
+                problems.append(
+                    f"integration must be recorded as {SELF_PINNED!r}; it is the commit "
+                    f"carrying this lock, not something the lock can pin"
+                )
+            continue
         if not revision or revision == "UNPINNED":
             problems.append(f"{name} has no pinned revision")
         elif len(revision) != 40:
@@ -118,6 +130,8 @@ def verify(lock_path: Path, workspace: Path) -> int:
     checked_workspace = workspace.exists() and (workspace / REPO_DIRS["contracts"]).exists()
     if checked_workspace:
         for name in PARTICIPANTS:
+            if name == "integration":
+                continue
             entry = lock.get(name)
             if not isinstance(entry, dict):
                 continue
@@ -200,7 +214,8 @@ def update(lock_path: Path, workspace: Path) -> int:
     lines += [
         "[integration]",
         f'repo = "{REPO_DIRS["integration"]}"',
-        f'revision = "{git_revision(workspace / REPO_DIRS["integration"])}"',
+        "# The commit that carries this file. See SELF_PINNED in tools/stack_lock.py.",
+        f'revision = "{SELF_PINNED}"',
         "",
     ]
     for name, (repo_name, milestone) in DEFERRED.items():
@@ -218,12 +233,14 @@ def update(lock_path: Path, workspace: Path) -> int:
 
 
 def main() -> int:
-    # Shared options are attached to both subcommands as well as to the top level, so
-    # `verify --workspace X` and `--workspace X verify` both work. A tool that accepts
-    # only one of those orders is a papercut every user hits exactly once, loudly.
+    # Shared options are attached to both the top level and each subcommand, so that
+    # `verify --workspace X` and `--workspace X verify` both work. The defaults are
+    # SUPPRESS rather than real values: an argparse subparser writes its defaults over
+    # whatever the top level already parsed, so a real default here would silently
+    # discard an option given before the subcommand.
     common = argparse.ArgumentParser(add_help=False)
-    common.add_argument("--lock", type=Path, default=Path("versions/stack.lock"))
-    common.add_argument("--workspace", type=Path, default=Path(".."))
+    common.add_argument("--lock", type=Path, default=argparse.SUPPRESS)
+    common.add_argument("--workspace", type=Path, default=argparse.SUPPRESS)
 
     parser = argparse.ArgumentParser(description=__doc__, parents=[common])
     sub = parser.add_subparsers(dest="command", required=True)
@@ -231,9 +248,12 @@ def main() -> int:
     sub.add_parser("update", parents=[common])
     args = parser.parse_args()
 
+    lock_path: Path = getattr(args, "lock", Path("versions/stack.lock"))
+    workspace: Path = getattr(args, "workspace", Path(".."))
+
     if args.command == "verify":
-        return verify(args.lock, args.workspace)
-    return update(args.lock, args.workspace)
+        return verify(lock_path, workspace)
+    return update(lock_path, workspace)
 
 
 if __name__ == "__main__":

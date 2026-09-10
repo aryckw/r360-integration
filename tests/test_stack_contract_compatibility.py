@@ -40,10 +40,19 @@ def test_stack_lock_verifies() -> None:
 def test_every_participating_repository_is_pinned() -> None:
     """A stack with an unpinned participant proves nothing about that participant."""
     data = lock()
-    for name in ("contracts", "rf_evidence", "reasoning", "integration"):
+    for name in ("contracts", "rf_evidence", "reasoning"):
         entry = data[name]
         assert isinstance(entry, dict), f"{name} is not pinned"
         assert len(str(entry["revision"])) == 40, f"{name} is not pinned to a full revision"
+
+
+def test_the_integration_repository_records_itself_as_self() -> None:
+    """This repository cannot pin its own revision inside a file it contains.
+
+    Writing the pin changes the revision, which invalidates the pin that was just
+    written. The revision that proved a combination is the commit carrying this lock.
+    """
+    assert lock()["integration"]["revision"] == "self"  # type: ignore[index]
 
 
 def test_later_participants_are_declared_rather_than_forgotten() -> None:

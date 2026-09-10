@@ -27,7 +27,8 @@ proto_tree_sha256 = "b4ec52b6589daf57ba2d92428b5ef06504a9748b018be02580756acf5b4
 
 [integration]
 repo = "r360-integration"
-revision = "dba3ad8eb79cb552215b83869ee9bbae8beb7b62"
+# The commit that carries this file. See SELF_PINNED in tools/stack_lock.py.
+revision = "self"
 
 [world_state_adapter]
 repo = "the-world-state-adapter"
