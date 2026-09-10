@@ -113,9 +113,7 @@ def verify(lock_path: Path, workspace: Path) -> int:
                     f"but the stack pins {expected_version!r}"
                 )
             if str(entry.get("proto_tree_sha256", "")) != expected_hash:
-                problems.append(
-                    f"{name} pins a different proto tree hash than the contracts entry"
-                )
+                problems.append(f"{name} pins a different proto tree hash than the contracts entry")
 
     checked_workspace = workspace.exists() and (workspace / REPO_DIRS["contracts"]).exists()
     if checked_workspace:
@@ -220,12 +218,17 @@ def update(lock_path: Path, workspace: Path) -> int:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--lock", type=Path, default=Path("versions/stack.lock"))
-    parser.add_argument("--workspace", type=Path, default=Path(".."))
+    # Shared options are attached to both subcommands as well as to the top level, so
+    # `verify --workspace X` and `--workspace X verify` both work. A tool that accepts
+    # only one of those orders is a papercut every user hits exactly once, loudly.
+    common = argparse.ArgumentParser(add_help=False)
+    common.add_argument("--lock", type=Path, default=Path("versions/stack.lock"))
+    common.add_argument("--workspace", type=Path, default=Path(".."))
+
+    parser = argparse.ArgumentParser(description=__doc__, parents=[common])
     sub = parser.add_subparsers(dest="command", required=True)
-    sub.add_parser("verify")
-    sub.add_parser("update")
+    sub.add_parser("verify", parents=[common])
+    sub.add_parser("update", parents=[common])
     args = parser.parse_args()
 
     if args.command == "verify":

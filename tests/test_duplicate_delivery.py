@@ -22,7 +22,6 @@ from pathlib import Path
 import psycopg
 import pytest
 from google.protobuf import json_format
-
 from r360.evidence.v1 import evidence_pb2
 
 from tests.conftest import (

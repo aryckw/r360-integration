@@ -14,10 +14,9 @@ from pathlib import Path
 
 import grpc
 import pytest
-
 from r360.service.v1 import services_pb2, services_pb2_grpc
 
-from tests.conftest import RF_EVIDENCE_GRPC, REASONING_GRPC
+from tests.conftest import REASONING_GRPC, RF_EVIDENCE_GRPC
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 LOCK = REPO_ROOT / "versions" / "stack.lock"
