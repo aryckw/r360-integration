@@ -13,14 +13,14 @@ proto_tree_sha256 = "b4ec52b6589daf57ba2d92428b5ef06504a9748b018be02580756acf5b4
 
 [rf_evidence]
 repo = "r360-rf-evidence"
-revision = "8b692ef0b14419ce266335a8a34bebc668b8555c"
+revision = "060b0e96389bc3661c5ceecfe9e52d71aad540b9"
 service_version = "0.1.0"
 contract_version = "1.0.0-alpha.1"
 proto_tree_sha256 = "b4ec52b6589daf57ba2d92428b5ef06504a9748b018be02580756acf5b444356"
 
 [reasoning]
 repo = "r360-reasoning"
-revision = "b9c144514cadfba218872865a09aeda91333214f"
+revision = "078849a668a6a0cc10d16e0c19a312025b696498"
 service_version = "0.1.0"
 contract_version = "1.0.0-alpha.1"
 proto_tree_sha256 = "b4ec52b6589daf57ba2d92428b5ef06504a9748b018be02580756acf5b444356"
