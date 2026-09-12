@@ -67,3 +67,13 @@ why = "format and lint gate"
 version = "1.10.1"
 license = "MIT"
 why = "strict type gate"
+
+[dependency.jsonschema]
+version = "4.23.0"
+license = "MIT"
+why = "validates the reference-hardware profile against the program schema"
+
+[dependency.PyYAML]
+version = "6.0.2"
+license = "MIT"
+why = "reads the reference-hardware profile"

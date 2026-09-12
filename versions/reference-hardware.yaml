@@ -1,0 +1,30 @@
+# The authoritative performance reference machine (D-040).
+#
+# Declared by the program owner on 2026-09-11. M2 writes the exact runtime fingerprint
+# into its benchmark artifact and freezes it against this profile; later milestones fail
+# on unexplained regression against that artifact. Recorded as observed, not as wished
+# for: two fields fall outside the provisional envelope in the handoff bundle and are
+# stated as such rather than rounded up.
+profile_id: RPP-1-I7-8750H-WSL2
+os: Windows 11 Home 10.0.26200 host; gates run in Debian bookworm containers on Docker Desktop (WSL2 kernel 6.6.87.2)
+cpu:
+  architecture: x86_64
+  model: Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz
+  physical_cores: 6
+  logical_processors: 12
+  features: [SSE4_2, AVX, AVX2, FMA, BMI2]
+memory_gb: 16
+# The physical GPU is a GeForce GTX 1060 6 GB (compute capability 6.1, driver 572.60).
+# It is recorded as null here because it is NOT visible from the containers the gates run
+# in: no NVIDIA container runtime is configured in WSL2. It is also below the provisional
+# envelope (6 GB against a stated 8 GB minimum, and compute capability 6.1 against a
+# preferred 8.6). Until the toolkit is installed and the profile revised, the CPU-only
+# profile is the only one this machine can honestly benchmark.
+gpu: null
+storage: Intel SSDPEKKW256G8 NVMe (256 GB, system); Samsung 870 EVO SATA SSD (1 TB, data)
+notes: >
+  Throughput measured here describes this laptop under Docker Desktop on WSL2, with a
+  named volume for build output and a bind mount for source. It is a real baseline for
+  regression, not a claim about any other system. Thermal throttling is likely under
+  sustained load on a mobile CPU; benchmarks must report distributions, not a single
+  number, and should record CPU frequency alongside results.

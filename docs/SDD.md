@@ -36,6 +36,14 @@ The object store is present and healthy but unused, which is stated here rather 
 to be discovered. Standing the dependency up now means M1 finds integration problems while
 it is building the corpus, instead of inventing storage under time pressure.
 
+## versions/reference-hardware.yaml
+
+The authoritative performance reference machine (D-040), declared by the program owner and
+validated against the program schema by the gate. It records what the gate containers can
+actually see: the GPU on this host is recorded as `null` because no NVIDIA container
+runtime exists in WSL2, and the file says so rather than describing hardware the
+benchmark could not use. M2 freezes its benchmark artifact against this profile.
+
 ## versions/stack.lock
 
 Records, for each participating repository: the pinned revision, the service version, the

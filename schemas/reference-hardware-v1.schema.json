@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://r360.example/schemas/reference-hardware-v1.schema.json",
+  "type": "object",
+  "required": [
+    "profile_id",
+    "os",
+    "cpu",
+    "memory_gb"
+  ],
+  "properties": {
+    "profile_id": {
+      "type": "string"
+    },
+    "os": {
+      "type": "string"
+    },
+    "cpu": {
+      "type": "object",
+      "required": [
+        "architecture",
+        "physical_cores"
+      ],
+      "properties": {
+        "architecture": {
+          "const": "x86_64"
+        },
+        "model": {
+          "type": "string"
+        },
+        "physical_cores": {
+          "type": "integer",
+          "minimum": 4
+        },
+        "features": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "memory_gb": {
+      "type": "integer",
+      "minimum": 16
+    },
+    "gpu": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "vendor": {
+          "const": "NVIDIA"
+        },
+        "model": {
+          "type": "string"
+        },
+        "vram_gb": {
+          "type": "number",
+          "minimum": 8
+        },
+        "compute_capability": {
+          "type": "string"
+        }
+      }
+    },
+    "storage": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}
