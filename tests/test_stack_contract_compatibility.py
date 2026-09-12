@@ -104,21 +104,17 @@ def test_both_services_report_the_contract_version_the_lock_pins() -> None:
     assert rf_health.contract_version == reasoning_health.contract_version
 
 
-def test_the_rf_service_refuses_replay_in_this_stack() -> None:
-    """The composed stack must not appear to offer a capability no build has yet.
-
-    M1 will make this test change shape. Until then, a stack that answered OK here would
-    be the first place an operator was misled.
-    """
+def test_a_capture_outside_the_corpus_root_is_refused_in_this_stack() -> None:
+    """REQ-RF-044 at the stack level: the composed service reads its corpus and nothing else."""
     with grpc.insecure_channel(RF_EVIDENCE_GRPC) as channel:
         stub = services_pb2_grpc.RfEvidenceControlStub(channel)
         with pytest.raises(grpc.RpcError) as error:
             stub.StartReplay(
                 services_pb2.ReplayRequest(
-                    capture_uri="file:///corpus/RF-002/capture.sigmf-meta",
+                    capture_uri="file:///etc/hostname",
                     mode=services_pb2.ReplayRequest.REPLAY_FAST,
-                    session_id="sess-integration",
+                    session_id="sess-integration-escape",
                 ),
                 timeout=15,
             )
-    assert error.value.code() == grpc.StatusCode.UNIMPLEMENTED
+    assert error.value.code() == grpc.StatusCode.INVALID_ARGUMENT

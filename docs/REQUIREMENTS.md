@@ -16,11 +16,16 @@ the gate if an active requirement has no test referencing its ID.
   from the lock and from what the running services report on health.
 - REQ-INT-005 [M0]: It shall own deterministic end-to-end expected outputs, and no
   implementation logic.
+- REQ-INT-007 [M1]: It shall receive replay lifecycle over MQTT and query replay status
+  over gRPC across container boundaries, and shall name the earliest stage that deviated
+  from the expected output when a replay does not complete as expected.
 - REQ-INT-006 [M10]: Later Sortie and World-State Adapter tests shall preserve those
   repositories' existing responsibilities rather than patching them to make R360 tests
   pass.
 
 ## Cross-repository requirements verified here
 
+- REQ-RF-044 [M1]: The composed RF service resolves capture URIs only under its corpus
+  root; a URI outside it is refused at the stack level.
 - REQ-REA-001 [M0]: What reaches Reasoning is a bounded structured record, not signal
   data. Checked at the stack level on what was actually persisted.

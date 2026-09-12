@@ -1,0 +1,13 @@
+{
+  "capture_uri": "RF-002-basic-pulse/capture.sigmf-meta",
+  "stream_id": "RF-002-basic-pulse",
+  "samples_total": 500000,
+  "states": [
+    "STREAM_CREATED",
+    "STREAM_INITIALIZING",
+    "STREAM_READY",
+    "STREAM_RUNNING",
+    "STREAM_STOPPING",
+    "STREAM_STOPPED"
+  ]
+}
