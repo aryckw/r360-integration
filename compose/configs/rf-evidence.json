@@ -38,5 +38,17 @@
     "SIGNAL_DETECTION",
     "PULSE_DETECTION",
     "RF_FEATURE_SET"
-  ]
+  ],
+  "dataplane": {
+    "stages": [
+      "block_power",
+      "peak_power"
+    ],
+    "backend_preference": [
+      "cuda",
+      "cpu_simd",
+      "cpu_scalar"
+    ],
+    "fuse_stages": false
+  }
 }

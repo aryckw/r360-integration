@@ -69,6 +69,33 @@ services:
       timeout: 3s
       retries: 20
 
+  # M2: the same service image, run once as a job, drives its own dataplane through the
+  # CLI against the composed configuration and writes the plan and metrics to a volume
+  # the gate reads. This is how the integration gate sees the graph's own account of a
+  # replay -- backend selection, copies, allocations, drops, bounded memory -- without
+  # bind-mounting a source tree or adding a test hook to the service. The service's
+  # health check does not wait for it; the gate does.
+  rf-evidence-bench:
+    build:
+      context: ../../r360-rf-evidence
+      target: service
+      args:
+        R360_RF_GIT_SHA: "${R360_RF_GIT_SHA:-unknown}"
+    volumes:
+      - ./configs/rf-evidence.json:/etc/r360/rf-evidence.json:ro
+      - bench-artifacts:/artifacts
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >-
+        /work/build/rf_evidence_cli replay
+        --capture /work/build/corpus/RF-002-basic-pulse/capture.sigmf-meta
+        --config /etc/r360/rf-evidence.json --block 65536 --runs 3
+        --metrics-out /artifacts/replay-rf002-65536.json
+        && /work/build/rf_evidence_cli replay
+        --capture /work/build/corpus/RF-002-basic-pulse/capture.sigmf-meta
+        --config /etc/r360/rf-evidence.json --block 65536 --loop-seconds 1800
+        --metrics-out /artifacts/long-replay-1800s.json
+
   reasoning:
     build:
       context: ../../r360-reasoning
@@ -96,6 +123,7 @@ services:
       # The sibling workspace, read only. stack.lock claims which revisions were proven
       # together; verifying that claim means being able to look at them.
       - ../..:/workspace:ro
+      - bench-artifacts:/artifacts:ro
     depends_on:
       mqtt:
         condition: service_healthy
@@ -107,6 +135,8 @@ services:
         condition: service_healthy
       reasoning:
         condition: service_healthy
+      rf-evidence-bench:
+        condition: service_completed_successfully
     environment:
       R360_MQTT_HOST: mqtt
       R360_MQTT_PORT: "1883"
@@ -116,6 +146,7 @@ services:
       R360_OBJECTSTORE: objectstore:9000
       R360_SESSION_ID: sess-integration
       R360_WORKSPACE: /workspace
+      R360_BENCH_ARTIFACTS: /artifacts
     command: ["make", "gate"]
 
   shell:
@@ -125,6 +156,7 @@ services:
     volumes:
       - ..:/work
       - ../..:/workspace:ro
+      - bench-artifacts:/artifacts:ro
     environment:
       R360_MQTT_HOST: mqtt
       R360_MQTT_PORT: "1883"
@@ -133,4 +165,9 @@ services:
       R360_REASONING_GRPC: reasoning:50052
       R360_SESSION_ID: sess-integration
       R360_WORKSPACE: /workspace
+      R360_BENCH_ARTIFACTS: /artifacts
     command: ["bash"]
+
+volumes:
+  # Written by rf-evidence-bench, read by the gate; overwritten on every stack run.
+  bench-artifacts:

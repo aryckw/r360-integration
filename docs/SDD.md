@@ -28,9 +28,10 @@ file either way.
 | `mqtt` | Mosquitto 2.0, the evidence and health path | used |
 | `postgres` | evidence references persisted by Reasoning | used |
 | `objectstore` | MinIO; the SigMF corpus lands here at M1 | stood up, not yet written to |
-| `rf-evidence` | the RF service, built from the sibling checkout | health, version, refusal of replay |
+| `rf-evidence` | the RF service, built from the sibling checkout | health, version, replay through the frozen graph |
+| `rf-evidence-bench` | the same image run once as a job | writes the graph's plan and metrics for two replays to `bench-artifacts` |
 | `reasoning` | the Reasoning service | idempotent intake and persistence |
-| `gate` | the test driver; owns no production logic | runs the acceptance suite |
+| `gate` | the test driver; owns no production logic | runs the acceptance suite; reads `bench-artifacts` |
 
 The object store is present and healthy but unused, which is stated here rather than left
 to be discovered. Standing the dependency up now means M1 finds integration problems while
@@ -42,7 +43,21 @@ The authoritative performance reference machine (D-040), declared by the program
 validated against the program schema by the gate. It records what the gate containers can
 actually see: the GPU on this host is recorded as `null` because no NVIDIA container
 runtime exists in WSL2, and the file says so rather than describing hardware the
-benchmark could not use. M2 freezes its benchmark artifact against this profile.
+benchmark could not use. M2 froze its benchmark artifact against this profile
+(`r360-rf-evidence/benchmarks/m2-baseline.json`); the gate checks the binding -- profile
+identifier, processor, features, a commit that exists in the pinned repository -- so the
+baseline cannot quietly describe a different machine than the one declared here.
+
+## The bench job (M2)
+
+`rf-evidence-bench` is the RF service image with a different command: the CLI replays
+RF-002 through the dataplane planned from the very configuration the service is running
+with, three times at 65 536 samples and once for thirty logical minutes, and writes the
+execution plan and full metrics to the `bench-artifacts` volume. The gate depends on it
+completing and reads the files. This is how the composed stack sees what only the graph
+can report about itself -- copies, allocations, queue high-water, resident set -- without
+a test hook in the service or a bind-mounted source tree. The expected values live in
+`expected/m2/`.
 
 ## versions/stack.lock
 

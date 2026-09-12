@@ -1,0 +1,40 @@
+{
+  "purpose": "What the composed RF service's own dataplane must report for an authoritative replay of RF-002 through the frozen graph, and what the stack must see on the wire.",
+  "capture_uri": "RF-002-basic-pulse/capture.sigmf-meta",
+  "stream_id": "RF-002-basic-pulse",
+  "block_size_samples": 65536,
+  "samples_total": 500000,
+  "semantic_hash": "9e653c0e54088f359ca29ac574056d2deeb72cecc9ca93a5d47a82ee33113d59",
+  "semantic_hash_origin": "r360-rf-evidence benchmarks/m1-semantic-hashes.json (M1 path, revision b10fe61)",
+  "long_replay": {
+    "logical_seconds": 1800,
+    "samples_total": 180000000,
+    "semantic_hash": "8902fb627ab6fc650124537388ed1ce0938f5fafe32f5de9d52b5763ccf250f7",
+    "rss_growth_limit_kb": 2048
+  },
+  "stages": [
+    "block_power",
+    "peak_power"
+  ],
+  "backend_preference": [
+    "cuda",
+    "cpu_simd",
+    "cpu_scalar"
+  ],
+  "fallback": {
+    "note": "This build carries no CUDA kernels (rf-evidence ADR-0007), so a cuda-first preference must fall back explicitly on every runner, GPU or not. When an image with CUDA kernels runs on a GPU runner, this expectation changes with it.",
+    "diagnostic_code": "BACKEND_FALLBACK",
+    "severity": "DIAGNOSTIC_WARNING",
+    "requested": "cuda",
+    "diagnostics_per_replay": 2
+  },
+  "states": [
+    "STREAM_CREATED",
+    "STREAM_INITIALIZING",
+    "STREAM_READY",
+    "STREAM_RUNNING",
+    "STREAM_STOPPING",
+    "STREAM_STOPPED"
+  ],
+  "loss_diagnostics_permitted": []
+}

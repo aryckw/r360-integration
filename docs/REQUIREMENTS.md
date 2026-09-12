@@ -19,6 +19,12 @@ the gate if an active requirement has no test referencing its ID.
 - REQ-INT-007 [M1]: It shall receive replay lifecycle over MQTT and query replay status
   over gRPC across container boundaries, and shall name the earliest stage that deviated
   from the expected output when a replay does not complete as expected.
+- REQ-INT-008 [M2]: It shall verify across container boundaries that the composed RF
+  service replays through its frozen native graph with zero loss, that backend fallback
+  and any loss are published through the typed diagnostic contract, that the service
+  image's own account of a replay (plan, hashes, copies, allocations, bounded memory)
+  matches the expected output, and that the frozen benchmark baseline is bound to the
+  declared reference hardware.
 - REQ-INT-006 [M10]: Later Sortie and World-State Adapter tests shall preserve those
   repositories' existing responsibilities rather than patching them to make R360 tests
   pass.
@@ -27,5 +33,12 @@ the gate if an active requirement has no test referencing its ID.
 
 - REQ-RF-044 [M1]: The composed RF service resolves capture URIs only under its corpus
   root; a URI outside it is refused at the stack level.
+- REQ-RF-013 [M2]: Authoritative replay in the composed stack drops nothing and publishes
+  no loss diagnostic.
+- REQ-RF-014 [M2]: Loss, when a live profile permits it, reaches the stack as a typed
+  diagnostic; at M2 the stack verifies the channel by its absence on an authoritative
+  replay and by the fallback diagnostic that uses the same channel.
+- REQ-RF-017 [M2]: A backend the composed service cannot honour falls back explicitly,
+  visible on the diagnostics topic and in the execution plan.
 - REQ-REA-001 [M0]: What reaches Reasoning is a bounded structured record, not signal
   data. Checked at the stack level on what was actually persisted.
