@@ -14,7 +14,9 @@
   },
   "stages": [
     "block_power",
-    "peak_power"
+    "spectral_detector",
+    "pulse_detector",
+    "pulse_grouping"
   ],
   "backend_preference": [
     "cuda",
@@ -22,11 +24,14 @@
     "cpu_scalar"
   ],
   "fallback": {
-    "note": "This build carries no CUDA kernels (rf-evidence ADR-0007), so a cuda-first preference must fall back explicitly on every runner, GPU or not. When an image with CUDA kernels runs on a GPU runner, this expectation changes with it.",
+    "note": "This build carries no CUDA kernels (rf-evidence ADR-0007), so a cuda-first preference must fall back explicitly on every runner, GPU or not, for the one stage in the chain that implements cuda (block_power); the M3 detection stages implement cpu_scalar only and have nothing to fall back from. When an image with CUDA kernels runs on a GPU runner, this expectation changes with it.",
     "diagnostic_code": "BACKEND_FALLBACK",
     "severity": "DIAGNOSTIC_WARNING",
     "requested": "cuda",
-    "diagnostics_per_replay": 2
+    "diagnostics_per_replay": 1,
+    "stages_with_cuda": [
+      "block_power"
+    ]
   },
   "states": [
     "STREAM_CREATED",

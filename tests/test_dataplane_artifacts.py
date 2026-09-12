@@ -47,10 +47,17 @@ def test_the_composed_service_plans_the_configured_graph_with_explicit_fallback(
     assert [s["stage"] for s in plan["stages"]] == EXPECTED["stages"]
     fallback = EXPECTED["fallback"]
     for stage in plan["stages"]:
-        assert stage["requested"] == fallback["requested"]
-        assert stage["fallback"] is True, "cuda is requested first and this build has no kernels"
+        if stage["stage"] in fallback["stages_with_cuda"]:
+            assert stage["requested"] == fallback["requested"]
+            assert (
+                stage["fallback"] is True
+            ), "cuda is requested first and this build has no kernels"
+            assert stage["fallback_reason"]
+        else:
+            assert (
+                stage["fallback"] is False
+            ), "a stage without a cuda path has nothing to fall back from"
         assert stage["backend"] in {"cpu_simd", "cpu_scalar"}
-        assert stage["fallback_reason"]
     assert len(plan["fallbacks"]) == fallback["diagnostics_per_replay"]
     assert plan["hardware"]["gpu"]["kernels_built"] is False
     assert plan["hardware"]["gpu"]["reason"]

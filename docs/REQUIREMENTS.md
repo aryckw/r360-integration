@@ -25,6 +25,10 @@ the gate if an active requirement has no test referencing its ID.
   image's own account of a replay (plan, hashes, copies, allocations, bounded memory)
   matches the expected output, and that the frozen benchmark baseline is bound to the
   declared reference hardware.
+- REQ-INT-009 [M3]: It shall verify across container boundaries that detection evidence
+  replayed in the RF service reaches Reasoning and is persisted as structured records
+  matching the fixture's truth within the roadmap tolerances, that only the M3 evidence
+  types appear, and that a repeated replay persists nothing new.
 - REQ-INT-006 [M10]: Later Sortie and World-State Adapter tests shall preserve those
   repositories' existing responsibilities rather than patching them to make R360 tests
   pass.
@@ -40,5 +44,12 @@ the gate if an active requirement has no test referencing its ID.
   replay and by the fallback diagnostic that uses the same channel.
 - REQ-RF-017 [M2]: A backend the composed service cannot honour falls back explicitly,
   visible on the diagnostics topic and in the execution plan.
+- REQ-RF-030 [M3]: Only SIGNAL_DETECTION, PULSE_DETECTION and RF_FEATURE_SET are
+  persisted from the composed RF service; nothing carries a classification.
+- REQ-RF-034 [M3]: Every numeric feature persisted carries unit, method and confidence.
+- REQ-RF-039 [M3]: A second replay of the same capture republishes the same evidence
+  IDs, which Reasoning's idempotent intake proves by persisting nothing new.
+- REQ-INT-003 [M0]: Idempotent persistence is re-proven at M3 on evidence the RF service
+  actually produced, not on a fixture.
 - REQ-REA-001 [M0]: What reaches Reasoning is a bounded structured record, not signal
   data. Checked at the stack level on what was actually persisted.

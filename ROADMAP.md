@@ -5,7 +5,7 @@
 | M0 | stack composition, version pinning, cross-repository acceptance | DONE |
 | M1 | deterministic replay end to end: fixture, lifecycle, status | DONE |
 | M2 | replay through the native graph; buffer and queue diagnostics | DONE |
-| M3 | detections and features compared against truth tolerances | TODO |
+| M3 | detections and features compared against truth tolerances | DONE |
 | M10 | World-State Adapter correlation, agreement and disagreement cases | TODO |
 | M11 | Sortie full-system deterministic acceptance | TODO |
 
@@ -54,6 +54,28 @@
    profile, the same processor and features, a commit that exists in the pinned
    repository, and invariants that held when frozen (D-040).
 6. `versions/stack.lock` pins the revision set that passed.
+
+## M3 exit criteria for this repository
+
+1. `gate` exits zero with the RF service running its detection graph from the mounted
+   configuration and the bench job reporting the detectors' counters.
+2. A replay of RF-002 over gRPC produces detection evidence that reaches Reasoning over
+   MQTT and is persisted: 294 to 300 PULSE_DETECTION rows and one RF_FEATURE_SET whose
+   PRI, pulse width and centre frequency are within the roadmap tolerances of the
+   fixture's truth (REQ-INT-009, REQ-INT-005).
+3. Only the three M3 evidence types are persisted, with unit, method and confidence on
+   every numeric feature, and provenance naming the configuration (REQ-RF-030,
+   REQ-RF-034).
+4. A second replay republishes the same deterministic IDs and persists nothing new
+   (REQ-RF-039, REQ-INT-003).
+5. `versions/stack.lock` pins the revision set that passed.
+
+## Explicitly not in M3
+
+No waveform or behaviour classification, no truth comparison beyond the M3 feature
+set, no Sortie, no World-State Adapter. The evaluation of Pd, Pfa and feature error over
+the statistical corpus lives in r360-rf-evidence, where the corpus is built; this
+repository checks that what the corpus proved survives the stack.
 
 ## Explicitly not in M2
 

@@ -30,8 +30,8 @@
     },
     {
       "name": "evidence",
-      "capacity_buffers": 64,
-      "overflow_policy": "FAIL_STREAM"
+      "capacity_buffers": 256,
+      "overflow_policy": "BLOCK"
     }
   ],
   "evidence_type_allowlist": [
@@ -42,7 +42,9 @@
   "dataplane": {
     "stages": [
       "block_power",
-      "peak_power"
+      "spectral_detector",
+      "pulse_detector",
+      "pulse_grouping"
     ],
     "backend_preference": [
       "cuda",
@@ -50,5 +52,34 @@
       "cpu_scalar"
     ],
     "fuse_stages": false
+  },
+  "detection": {
+    "spectral": {
+      "fft_size": 1024,
+      "window": "hann",
+      "threshold_db": 10.0,
+      "min_bins": 1,
+      "max_signals_per_block": 32
+    },
+    "pulse": {
+      "method": "ca_cfar",
+      "threshold_db": 10.0,
+      "guard_cells": 48,
+      "training_cells": 64,
+      "target_pfa": 1e-06,
+      "edge_policy": "skip",
+      "extent_db": 6.0,
+      "min_pulse_samples": 3,
+      "max_gap_samples": 2,
+      "max_pulse_samples": 4096,
+      "integration_samples": 4
+    },
+    "grouping": {
+      "frequency_tolerance_hz": 5000.0,
+      "train_gap_s": 0.5,
+      "max_open_trains": 16,
+      "min_pulses_for_train": 3
+    },
+    "max_detections_per_block": 4096
   }
 }

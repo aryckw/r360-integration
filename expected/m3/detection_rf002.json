@@ -1,0 +1,34 @@
+{
+  "purpose": "What the composed stack must persist in Reasoning after the RF service replays RF-002 through its M3 detection graph with the shipped configuration (REQ-INT-009).",
+  "capture_uri": "RF-002-basic-pulse/capture.sigmf-meta",
+  "capture_id": "RF-002-basic-pulse",
+  "truth": {
+    "pulses": 300,
+    "pri_s": 0.01,
+    "pulse_width_s": 0.0001,
+    "center_frequency_hz": 1000000000.0,
+    "snr_db": 20.0,
+    "pulse_train_start_s": 1.0
+  },
+  "permitted_evidence_types": [
+    "SIGNAL_DETECTION",
+    "PULSE_DETECTION",
+    "RF_FEATURE_SET"
+  ],
+  "pulse_detections": {
+    "min": 294,
+    "max": 300
+  },
+  "feature_sets": 1,
+  "tolerances": {
+    "pri_relative": 0.02,
+    "pulse_width_relative": 0.05,
+    "center_frequency_hz": 97.65625
+  },
+  "required_feature_fields": [
+    "unit",
+    "method",
+    "confidence"
+  ],
+  "note": "Evidence IDs derive from session, stream, type, sample index and ordinal; a second replay of the same capture in the same session republishes the same IDs and Reasoning's idempotent intake keeps one row each."
+}
