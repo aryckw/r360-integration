@@ -20,7 +20,7 @@ proto_tree_sha256 = "b4ec52b6589daf57ba2d92428b5ef06504a9748b018be02580756acf5b4
 
 [reasoning]
 repo = "r360-reasoning"
-revision = "ee911044e7734fe03dace190482932687f851a33"
+revision = "ba4eb2f56eb1078de2c87db1ad8b6ce9854c278b"
 service_version = "0.1.0"
 contract_version = "1.0.0-alpha.1"
 proto_tree_sha256 = "b4ec52b6589daf57ba2d92428b5ef06504a9748b018be02580756acf5b444356"
