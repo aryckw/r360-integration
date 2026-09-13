@@ -2,8 +2,9 @@
 QoS 1, taken in idempotently by Reasoning, persisted as structured records -- and what is
 persisted is what the fixture's truth says (REQ-INT-002, REQ-INT-005, REQ-INT-009).
 
-Only the three M3 evidence types appear (REQ-RF-030). Every numeric feature carries a
-unit, a method and a confidence (REQ-RF-034). The one RF_FEATURE_SET measures RF-002's
+Only the permitted evidence types appear (REQ-RF-030; since M4 the shipped graph also
+classifies, and those verdicts are the M4 test's business). Every numeric feature carries
+a unit, a method and a confidence (REQ-RF-034). The one RF_FEATURE_SET measures RF-002's
 train within the roadmap's tolerances. A second replay of the same capture republishes
 the same deterministic IDs and Reasoning keeps one row each (REQ-INT-003, REQ-RF-039).
 """
@@ -117,7 +118,11 @@ def test_detection_evidence_is_persisted_by_reasoning_as_the_truth_says() -> Non
         assert evidence.observation.time.HasField("logical_time_ns")
         assert evidence.provenance.processor_name == "r360-rf-evidence"
         assert evidence.provenance.configuration_sha256, "provenance names the configuration"
-        assert not evidence.classifications, "M3 classifies nothing"
+        if (
+            evidence_pb2.EvidenceType.Name(evidence.evidence_type)
+            in EXPECTED["measured_evidence_types"]
+        ):
+            assert not evidence.classifications, "a measurement carries no verdict"
         for f in evidence.features:
             assert f.method, f"{evidence.evidence_id}: {f.name} has no method"
             if f.HasField("numeric_value"):

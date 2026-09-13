@@ -29,6 +29,11 @@ the gate if an active requirement has no test referencing its ID.
   replayed in the RF service reaches Reasoning and is persisted as structured records
   matching the fixture's truth within the roadmap tolerances, that only the M3 evidence
   types appear, and that a repeated replay persists nothing new.
+- REQ-INT-010 [M4]: It shall verify across container boundaries that classification
+  evidence produced by the RF service's approved models reaches Reasoning and is persisted
+  naming the fixture's labelled waveform and behaviour classes from the closed taxonomy
+  with model identity and a reference to the feature set, that only the permitted evidence
+  types appear, and that a repeated replay persists nothing new.
 - REQ-INT-006 [M10]: Later Sortie and World-State Adapter tests shall preserve those
   repositories' existing responsibilities rather than patching them to make R360 tests
   pass.
@@ -45,7 +50,16 @@ the gate if an active requirement has no test referencing its ID.
 - REQ-RF-017 [M2]: A backend the composed service cannot honour falls back explicitly,
   visible on the diagnostics topic and in the execution plan.
 - REQ-RF-030 [M3]: Only SIGNAL_DETECTION, PULSE_DETECTION and RF_FEATURE_SET are
-  persisted from the composed RF service; nothing carries a classification.
+  persisted from the composed RF service as measurements; no measurement carries a
+  classification (the M4 verdict types are separate records).
+- REQ-RF-050 [M4]: A WAVEFORM_CLASSIFICATION persisted from the composed RF service names
+  a closed waveform class with its model identity.
+- REQ-RF-051 [M4]: A RADAR_BEHAVIOR persisted from the composed RF service names PRI, RF
+  and scan behaviour from the closed sets with their model identities.
+- REQ-RF-056 [M4]: A second replay republishes the same verdicts under the same IDs and
+  Reasoning persists nothing new.
+- REQ-RF-057 [M4]: No persisted verdict names anything outside the taxonomy, and none
+  carries a novelty assessment before M6.
 - REQ-RF-034 [M3]: Every numeric feature persisted carries unit, method and confidence.
 - REQ-RF-039 [M3]: A second replay of the same capture republishes the same evidence
   IDs, which Reasoning's idempotent intake proves by persisting nothing new.

@@ -13,7 +13,9 @@
   "permitted_evidence_types": [
     "SIGNAL_DETECTION",
     "PULSE_DETECTION",
-    "RF_FEATURE_SET"
+    "RF_FEATURE_SET",
+    "WAVEFORM_CLASSIFICATION",
+    "RADAR_BEHAVIOR"
   ],
   "pulse_detections": {
     "min": 294,
@@ -30,5 +32,10 @@
     "method",
     "confidence"
   ],
-  "note": "Evidence IDs derive from session, stream, type, sample index and ordinal; a second replay of the same capture in the same session republishes the same IDs and Reasoning's idempotent intake keeps one row each."
+  "note": "Evidence IDs derive from session, stream, type, sample index and ordinal; a second replay of the same capture in the same session republishes the same IDs and Reasoning's idempotent intake keeps one row each. Since M4 the shipped graph also classifies the train; the M3 assertions here are about the measured types, and the M4 test covers the verdicts.",
+  "measured_evidence_types": [
+    "SIGNAL_DETECTION",
+    "PULSE_DETECTION",
+    "RF_FEATURE_SET"
+  ]
 }

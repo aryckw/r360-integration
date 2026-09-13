@@ -37,14 +37,17 @@
   "evidence_type_allowlist": [
     "SIGNAL_DETECTION",
     "PULSE_DETECTION",
-    "RF_FEATURE_SET"
+    "RF_FEATURE_SET",
+    "WAVEFORM_CLASSIFICATION",
+    "RADAR_BEHAVIOR"
   ],
   "dataplane": {
     "stages": [
       "block_power",
       "spectral_detector",
       "pulse_detector",
-      "pulse_grouping"
+      "pulse_grouping",
+      "signal_grouping"
     ],
     "backend_preference": [
       "cuda",
@@ -76,10 +79,18 @@
     },
     "grouping": {
       "frequency_tolerance_hz": 5000.0,
-      "train_gap_s": 0.5,
+      "train_gap_s": 1.0,
       "max_open_trains": 16,
-      "min_pulses_for_train": 3
+      "min_pulses_for_train": 3,
+      "association": "band",
+      "split_interleaved": true,
+      "emission_gap_s": 0.5
     },
     "max_detections_per_block": 4096
+  },
+  "classifier": {
+    "enabled": true,
+    "model_dir": "/work/models",
+    "model_set": "m4-engineered-mlp-v1"
   }
 }

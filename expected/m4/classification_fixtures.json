@@ -1,0 +1,69 @@
+{
+  "purpose": "What the composed stack must persist in Reasoning after the RF service replays the two M4 behaviour fixtures through its shipped graph with the approved model set (REQ-INT-010).",
+  "model_set": "m4-engineered-mlp-v1",
+  "fixtures": [
+    {
+      "capture_uri": "RF-010-staggered-hopping-scan/capture.sigmf-meta",
+      "capture_id": "RF-010-staggered-hopping-scan",
+      "truth": {
+        "waveform": "LFM",
+        "pri_behavior": "PRI_STAGGER",
+        "rf_behavior": "RF_HOPPING",
+        "scan_behavior": "SCAN_LIKE"
+      },
+      "waveform_classifications": 1,
+      "radar_behaviors": 1
+    },
+    {
+      "capture_uri": "RF-011-fmcw-sweep/capture.sigmf-meta",
+      "capture_id": "RF-011-fmcw-sweep",
+      "truth": {
+        "waveform": "FMCW"
+      },
+      "waveform_classifications": 1,
+      "radar_behaviors": 0
+    }
+  ],
+  "taxonomies": {
+    "waveform": "r360.rf.waveform.v1",
+    "pri_behavior": "r360.radar.pri_behavior.v1",
+    "rf_behavior": "r360.radar.rf_behavior.v1",
+    "scan_behavior": "r360.radar.scan_behavior.v1"
+  },
+  "classes": {
+    "r360.rf.waveform.v1": [
+      "CW",
+      "PULSED",
+      "LFM",
+      "PHASE_CODED",
+      "FMCW"
+    ],
+    "r360.radar.pri_behavior.v1": [
+      "PRI_CONSTANT",
+      "PRI_STAGGER",
+      "PRI_JITTER",
+      "PRI_DWELL_SWITCH"
+    ],
+    "r360.radar.rf_behavior.v1": [
+      "RF_FIXED",
+      "RF_HOPPING",
+      "RF_AGILE",
+      "RF_SWEPT"
+    ],
+    "r360.radar.scan_behavior.v1": [
+      "SCAN_LIKE",
+      "ACQUISITION_LIKE",
+      "TRACK_LIKE",
+      "HIGH_REVISIT"
+    ]
+  },
+  "permitted_evidence_types": [
+    "SIGNAL_DETECTION",
+    "PULSE_DETECTION",
+    "RF_FEATURE_SET",
+    "WAVEFORM_CLASSIFICATION",
+    "RADAR_BEHAVIOR"
+  ],
+  "min_confidence": 0.5,
+  "note": "A verdict names a class from the closed taxonomy and the model that produced it, references the RF_FEATURE_SET it was made from, and carries every class probability as a feature. Nothing names a system. Novelty is not asserted (M6)."
+}

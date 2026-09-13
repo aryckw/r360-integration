@@ -6,6 +6,7 @@
 | M1 | deterministic replay end to end: fixture, lifecycle, status | DONE |
 | M2 | replay through the native graph; buffer and queue diagnostics | DONE |
 | M3 | detections and features compared against truth tolerances | DONE |
+| M4 | classification evidence from approved models, persisted as the labels say | DONE |
 | M10 | World-State Adapter correlation, agreement and disagreement cases | TODO |
 | M11 | Sortie full-system deterministic acceptance | TODO |
 
@@ -54,6 +55,32 @@
    profile, the same processor and features, a commit that exists in the pinned
    repository, and invariants that held when frozen (D-040).
 6. `versions/stack.lock` pins the revision set that passed.
+
+## M4 exit criteria for this repository
+
+1. `gate` exits zero with the RF service running its shipped M4 graph -- band
+   association, `signal_grouping`, the classifier enabled on the approved model set
+   baked into the image -- from the mounted configuration.
+2. A replay of RF-010 (a staggered, hopping, scanning LFM emitter) over gRPC produces
+   one WAVEFORM_CLASSIFICATION naming LFM and one RADAR_BEHAVIOR naming PRI_STAGGER,
+   RF_HOPPING and SCAN_LIKE, persisted by Reasoning with model identity, a reference to a
+   persisted RF_FEATURE_SET, and every class probability as a feature (REQ-INT-010).
+3. A replay of RF-011 (an FMCW sweep) produces one WAVEFORM_CLASSIFICATION naming FMCW
+   and no behaviour verdict.
+4. Only the five permitted evidence types are persisted; every class named is in the
+   closed taxonomy; nothing carries a novelty assessment (REQ-RF-050, REQ-RF-051,
+   REQ-RF-057).
+5. The M2 and M3 stack tests hold under the M4 configuration: the chain reports its five
+   stages with the one fallback, RF-002's train is measured within tolerance, and a
+   repeated replay persists nothing new (REQ-RF-056).
+6. `versions/stack.lock` pins the revision set that passed.
+
+## Explicitly not in M4
+
+No EW class, no novelty decision, no Sortie, no World-State Adapter. The held-out
+evaluation, the SNR matrix and the calibration report live in r360-rf-evidence, where
+the behaviour corpus is built; this repository checks that a verdict survives the stack
+and says what the fixture's labels say.
 
 ## M3 exit criteria for this repository
 
