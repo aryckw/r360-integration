@@ -34,6 +34,13 @@ the gate if an active requirement has no test referencing its ID.
   naming the fixture's labelled waveform and behaviour classes from the closed taxonomy
   with model identity and a reference to the feature set, that only the permitted evidence
   types appear, and that a repeated replay persists nothing new.
+- REQ-INT-011 [M5]: It shall verify across container boundaries that EW_BEHAVIOR
+  evidence produced by the RF service's assessment stage and approved models reaches
+  Reasoning and is persisted naming the fixture's labelled interference family and
+  suppression-like or repeater-like relation from the closed taxonomies, on the right
+  subject kind, with model identity and references to the subject's and the related
+  train's feature sets, that only the permitted evidence types appear, and that a
+  repeated replay persists nothing new.
 - REQ-INT-006 [M10]: Later Sortie and World-State Adapter tests shall preserve those
   repositories' existing responsibilities rather than patching them to make R360 tests
   pass.
@@ -60,6 +67,15 @@ the gate if an active requirement has no test referencing its ID.
   Reasoning persists nothing new.
 - REQ-RF-057 [M4]: No persisted verdict names anything outside the taxonomy, and none
   carries a novelty assessment before M6.
+- REQ-RF-060 [M5]: An EW_BEHAVIOR persisted from the composed RF service is about one
+  subject (a pulse train or an emission), names its interference family and its
+  suppression-like or repeater-like relation from the closed EW taxonomies with model
+  identity, carries the assessment vector, and references the subject's feature set
+  first and the related train's second.
+- REQ-RF-064 [M5]: A second replay republishes the same EW verdicts under the same IDs
+  and Reasoning persists nothing new.
+- REQ-RF-065 [M5]: No persisted EW verdict names a system, an emitter or an intent; the
+  classes are the taxonomies' and nothing else.
 - REQ-RF-034 [M3]: Every numeric feature persisted carries unit, method and confidence.
 - REQ-RF-039 [M3]: A second replay of the same capture republishes the same evidence
   IDs, which Reasoning's idempotent intake proves by persisting nothing new.

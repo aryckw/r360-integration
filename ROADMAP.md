@@ -7,6 +7,7 @@
 | M2 | replay through the native graph; buffer and queue diagnostics | DONE |
 | M3 | detections and features compared against truth tolerances | DONE |
 | M4 | classification evidence from approved models, persisted as the labels say | DONE |
+| M5 | EW-family evidence across the stack, on the right subject, as the labels say | DONE |
 | M10 | World-State Adapter correlation, agreement and disagreement cases | TODO |
 | M11 | Sortie full-system deterministic acceptance | TODO |
 
@@ -55,6 +56,32 @@
    profile, the same processor and features, a commit that exists in the pinned
    repository, and invariants that held when frozen (D-040).
 6. `versions/stack.lock` pins the revision set that passed.
+
+## M5 exit criteria for this repository
+
+1. `gate` exits zero with the RF service running its shipped M5 graph -- the M4 graph
+   plus `ew_assessment`, the smallest-of CFAR estimate, the 20th-percentile floor, the
+   M5 model set baked into the image -- from the mounted configuration.
+2. A replay of RF-012 (a pulsed radar with a narrow noise band arriving on its
+   frequency) over gRPC produces EW_BEHAVIOR on the band naming NARROWBAND_INTERFERENCE
+   and SPOT_SUPPRESSION_LIKE, referencing the band's and the radar's feature sets, and
+   EW_BEHAVIOR on the radar's train naming nothing, persisted by Reasoning with model
+   identity and every class probability as a feature (REQ-INT-011).
+3. A replay of RF-013 (a pulsed radar whose every pulse is followed by a louder copy)
+   produces EW_BEHAVIOR on the train naming DELAYED_REPLICA_LIKE and no interference.
+4. Only the six permitted evidence types are persisted; every class named is in the
+   closed taxonomies; nothing carries a novelty assessment.
+5. The M2, M3 and M4 stack tests hold under the M5 configuration: the chain reports its
+   six stages with the one fallback, RF-002's train is measured within tolerance, the
+   M4 fixtures are named as before, and a repeated replay persists nothing new.
+6. `versions/stack.lock` pins the revision set that passed.
+
+## Explicitly not in M5
+
+No novelty decision, no Sortie, no World-State Adapter. The held-out evaluation, the
+pressure test and the SNR matrix live in r360-rf-evidence; this repository checks that
+an EW verdict survives the stack, lands on the right subject and says what the fixture's
+labels say.
 
 ## M4 exit criteria for this repository
 

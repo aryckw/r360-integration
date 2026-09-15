@@ -39,7 +39,8 @@
     "PULSE_DETECTION",
     "RF_FEATURE_SET",
     "WAVEFORM_CLASSIFICATION",
-    "RADAR_BEHAVIOR"
+    "RADAR_BEHAVIOR",
+    "EW_BEHAVIOR"
   ],
   "dataplane": {
     "stages": [
@@ -47,7 +48,8 @@
       "spectral_detector",
       "pulse_detector",
       "pulse_grouping",
-      "signal_grouping"
+      "signal_grouping",
+      "ew_assessment"
     ],
     "backend_preference": [
       "cuda",
@@ -62,7 +64,8 @@
       "window": "hann",
       "threshold_db": 10.0,
       "min_bins": 1,
-      "max_signals_per_block": 32
+      "max_signals_per_block": 32,
+      "floor_percentile": 20
     },
     "pulse": {
       "method": "ca_cfar",
@@ -75,7 +78,8 @@
       "min_pulse_samples": 3,
       "max_gap_samples": 2,
       "max_pulse_samples": 4096,
-      "integration_samples": 4
+      "integration_samples": 4,
+      "cfar_estimator": "smallest_of"
     },
     "grouping": {
       "frequency_tolerance_hz": 5000.0,
@@ -91,6 +95,6 @@
   "classifier": {
     "enabled": true,
     "model_dir": "/work/models",
-    "model_set": "m4-engineered-mlp-v1"
+    "model_set": "m5-engineered-mlp-v1"
   }
 }

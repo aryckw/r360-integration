@@ -1,6 +1,6 @@
 {
   "purpose": "What the composed stack must persist in Reasoning after the RF service replays the two M4 behaviour fixtures through its shipped graph with the approved model set (REQ-INT-010).",
-  "model_set": "m4-engineered-mlp-v1",
+  "model_set": "m5-engineered-mlp-v1",
   "fixtures": [
     {
       "capture_uri": "RF-010-staggered-hopping-scan/capture.sigmf-meta",
@@ -62,7 +62,8 @@
     "PULSE_DETECTION",
     "RF_FEATURE_SET",
     "WAVEFORM_CLASSIFICATION",
-    "RADAR_BEHAVIOR"
+    "RADAR_BEHAVIOR",
+    "EW_BEHAVIOR"
   ],
   "min_confidence": 0.5,
   "note": "A verdict names a class from the closed taxonomy and the model that produced it, references the RF_FEATURE_SET it was made from, and carries every class probability as a feature. Nothing names a system. Novelty is not asserted (M6)."

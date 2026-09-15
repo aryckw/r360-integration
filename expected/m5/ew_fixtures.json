@@ -1,0 +1,68 @@
+{
+  "purpose": "What the composed stack must persist in Reasoning after the RF service replays the two M5 EW fixtures through its shipped graph with the approved model set (REQ-INT-011).",
+  "model_set": "m5-engineered-mlp-v1",
+  "fixtures": [
+    {
+      "capture_uri": "RF-012-spot-over-pulsed/capture.sigmf-meta",
+      "capture_id": "RF-012-spot-over-pulsed",
+      "subjects": {
+        "EMISSION": {
+          "r360.ew.interference.v1": "NARROWBAND_INTERFERENCE",
+          "r360.ew.suppression.v1": "SPOT_SUPPRESSION_LIKE"
+        },
+        "PULSE_TRAIN": {
+          "r360.ew.interference.v1": "NO_INTERFERENCE_OBSERVED",
+          "r360.ew.repeater.v1": "NO_REPLICA_OBSERVED"
+        }
+      },
+      "ew_behaviors": 2,
+      "related_feature_sets_on_emission": 2
+    },
+    {
+      "capture_uri": "RF-013-delayed-replica/capture.sigmf-meta",
+      "capture_id": "RF-013-delayed-replica",
+      "subjects": {
+        "PULSE_TRAIN": {
+          "r360.ew.interference.v1": "NO_INTERFERENCE_OBSERVED",
+          "r360.ew.repeater.v1": "DELAYED_REPLICA_LIKE"
+        }
+      },
+      "ew_behaviors": 1,
+      "related_feature_sets_on_emission": 0
+    }
+  ],
+  "classes": {
+    "r360.ew.interference.v1": [
+      "NARROWBAND_INTERFERENCE",
+      "BROADBAND_INTERFERENCE",
+      "SWEPT_INTERFERENCE",
+      "PULSED_INTERFERENCE",
+      "STRUCTURED_INTERFERENCE",
+      "NO_INTERFERENCE_OBSERVED"
+    ],
+    "r360.ew.suppression.v1": [
+      "SPOT_SUPPRESSION_LIKE",
+      "BARRAGE_SUPPRESSION_LIKE",
+      "SWEPT_SUPPRESSION_LIKE",
+      "NO_SUPPRESSION_OBSERVED"
+    ],
+    "r360.ew.repeater.v1": [
+      "DELAYED_REPLICA_LIKE",
+      "MULTIPLE_REPLICA_LIKE",
+      "FREQUENCY_SHIFTED_REPLICA_LIKE",
+      "TIME_VARYING_REPLICA_LIKE",
+      "NO_REPLICA_OBSERVED"
+    ]
+  },
+  "permitted_evidence_types": [
+    "SIGNAL_DETECTION",
+    "PULSE_DETECTION",
+    "RF_FEATURE_SET",
+    "WAVEFORM_CLASSIFICATION",
+    "RADAR_BEHAVIOR",
+    "EW_BEHAVIOR"
+  ],
+  "assessment_method": "features.ew_assessment.v1",
+  "min_confidence": 0.5,
+  "note": "An EW verdict is about a subject -- a pulse train or an emission -- and a relation to the stream's principal train. It names a family or relation from the closed taxonomies and the model that produced it, references the subject's RF_FEATURE_SET first and the related train's second, and carries the assessment vector and every class probability as features. Nothing names a system or an intent. Novelty is not asserted (M6)."
+}

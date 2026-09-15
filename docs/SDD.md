@@ -59,14 +59,18 @@ can report about itself -- copies, allocations, queue high-water, resident set -
 a test hook in the service or a bind-mounted source tree. The expected values live in
 `expected/m2/`.
 
-## Truth across the stack (M3, M4)
+## Truth across the stack (M3, M4, M5)
 
 `expected/m3/` says what Reasoning must hold after RF-002 is replayed through the
 composed service's graph: how many pulses, one feature set, its PRI, width and centre
 frequency within the roadmap tolerances. `expected/m4/` says the same for the two
 behaviour fixtures the RF corpus carries for this purpose: which waveform and behaviour
 classes the approved models must name, with model identity, a reference to the feature
-set and every class probability on the record. The RF service image carries its approved
+set and every class probability on the record. `expected/m5/` says the same for the two
+EW fixtures: which interference family and which suppression-like or repeater-like
+relation the assessment stage and the approved EW heads must name, on which subject
+kind (the band or the train), with references to the subject's and the related train's
+feature sets. The RF service image carries its approved
 model set under `/work/models`, and the mounted configuration enables the classifier on
 it; a model set the service cannot verify against its registry keeps the service from
 starting at all, which the stack's health check would report.

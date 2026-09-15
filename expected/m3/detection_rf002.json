@@ -15,7 +15,8 @@
     "PULSE_DETECTION",
     "RF_FEATURE_SET",
     "WAVEFORM_CLASSIFICATION",
-    "RADAR_BEHAVIOR"
+    "RADAR_BEHAVIOR",
+    "EW_BEHAVIOR"
   ],
   "pulse_detections": {
     "min": 294,
